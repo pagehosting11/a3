@@ -28,6 +28,15 @@ let selectedDateKey = null;
 let events = {};
 
 
+/* Event types: add a new one here + a matching option in index.html + CSS */
+
+const EVENT_TYPES = {
+    HW:      { label: "HOMEWORK", className: "" },
+    PROJECT: { label: "PROJECT",  className: "project" },
+    EXAM:    { label: "EXAM",     className: "exam" }
+};
+
+
 const calendar = document.getElementById("calendar");
 const monthYear = document.getElementById("monthYear");
 
@@ -70,7 +79,6 @@ async function loadEvents() {
             console.log(
                 "Firestore document doesn't exist."
             );
-
 
 
             const oldData =
@@ -138,7 +146,6 @@ async function loadEvents() {
         );
 
 
-
         try {
 
             const oldData =
@@ -165,7 +172,6 @@ async function loadEvents() {
         );
     }
 }
-
 
 
 
@@ -209,8 +215,6 @@ function createCalendar() {
         currentDate.getMonth();
 
 
-
-
     monthYear.textContent =
         currentDate.toLocaleDateString(
             "en-US",
@@ -221,15 +225,12 @@ function createCalendar() {
         );
 
 
-
-
     const firstDay =
         new Date(
             year,
             month,
             1
         );
-
 
 
     let startingDay =
@@ -241,14 +242,12 @@ function createCalendar() {
     }
 
 
-
     const daysInMonth =
         new Date(
             year,
             month + 1,
             0
         ).getDate();
-
 
 
     for (
@@ -267,8 +266,6 @@ function createCalendar() {
             emptyDay
         );
     }
-
-
 
 
     for (
@@ -298,7 +295,6 @@ function createCalendar() {
             String(month + 1).padStart(2, "0") +
             "-" +
             String(day).padStart(2, "0");
-
 
 
         const weekday =
@@ -353,21 +349,19 @@ function createCalendar() {
             events[dateKey].forEach(
                 (event, index) => {
 
+                    const typeInfo =
+                        EVENT_TYPES[event.type] ||
+                        EVENT_TYPES.HW;
+
+
                     const eventElement =
                         document.createElement(
                             "div"
                         );
 
-
                     eventElement.className =
                         "event " +
-                        (
-                            event.type === "PROJECT"
-                                ? "project"
-                                : ""
-                        );
-
-
+                        typeInfo.className;
 
 
                     const typeElement =
@@ -379,12 +373,8 @@ function createCalendar() {
                         "event-type";
 
                     typeElement.textContent =
-                        event.type === "PROJECT"
-                            ? "PROJECT"
-                            : "HOMEWORK";
+                        typeInfo.label;
 
-
-               
 
                     const titleElement =
                         document.createElement(
@@ -398,8 +388,6 @@ function createCalendar() {
                         event.title;
 
 
-               
-
                     const descriptionElement =
                         document.createElement(
                             "div"
@@ -412,7 +400,6 @@ function createCalendar() {
                         event.description || "";
 
 
-               
                     const deleteButton =
                         document.createElement(
                             "button"
@@ -550,7 +537,6 @@ function openEventWindow(dateKey) {
 
 
 
-
 function closeEventWindow() {
 
     overlay.classList.remove(
@@ -619,14 +605,11 @@ saveButton.addEventListener(
         }
 
 
-
-
         if (!events[selectedDateKey]) {
 
             events[selectedDateKey] =
                 [];
         }
-
 
 
         events[selectedDateKey].push({
@@ -651,7 +634,6 @@ saveButton.addEventListener(
 
 
         } catch (error) {
-
 
 
             events[selectedDateKey].pop();
@@ -701,7 +683,6 @@ nextMonth.addEventListener(
         createCalendar();
     }
 );
-
 
 
 
